@@ -2828,7 +2828,92 @@ public class InAppWebView: WKWebView, UIScrollViewDelegate, WKUIDelegate,
 //        print(elementInfo.linkURL)
 //        //onContextMenuWillPresentForElement(linkURL: elementInfo.linkURL?.absoluteString)
 //    }
+
+    @available(iOS 18.4, *)
+    public func webView(_ webView: WKWebView,
+                        runOpenPanelWith parameters: WKOpenPanelParameters,
+                        initiatedByFrame frame: WKFrameInfo,
+                        completionHandler: @escaping ([URL]?) -> Void) {
+        var completionHandlerCalled = false
+        let request = ShowFileChooserRequest()
+        if parameters.allowsMultipleSelection {
+            request.mode = .openMultiple
+        } else if parameters.allowsDirectories {
+            request.mode = .openFolder
+        }
+
+        let callback = WebViewChannelDelegate.ShowFileChooserCallback()
+        callback.nonNullSuccess = { [weak callback] (response: ShowFileChooserResponse) in
+            if !response.handledByClient {
+                callback?.defaultBehaviour(nil)
+            } else if let filePaths = response.filePaths {
+                completionHandlerCalled = true
+                completionHandler(filePaths.compactMap { URL(string: $0) })
+            } else {
+                completionHandlerCalled = true
+                completionHandler([])
+            }
+            return true
+        }
+        callback.defaultBehaviour = { [weak self] (response: ShowFileChooserResponse?) in
+            guard !completionHandlerCalled else { return }
+            guard let self else {
+                completionHandlerCalled = true
+                completionHandler(nil)
+                return
+            }
+            self.pickFile(parameters: parameters) {
+                completionHandlerCalled = true
+                completionHandler($0)
+            }
+        }
+        callback.error = { [weak callback] (code: String, message: String?, details: Any?) in
+            print(code + ", " + (message ?? ""))
+            callback?.defaultBehaviour(nil)
+        }
+        
+        if let channelDelegate, let settings, settings.useOnShowFileChooser {
+            channelDelegate.onShowFileChooser(request: request, callback: callback)
+        } else {
+            callback.defaultBehaviour(nil)
+        }
+    }
     
+    private var filePickerDelegate: FilePickerDelegate?
+    @available(iOS 18.4, *)
+    private func pickFile(parameters: WKOpenPanelParameters, completionHandler: @escaping ([URL]?) -> Void) {
+        filePickerDelegate = .init { [weak self] urls in
+            self?.filePickerDelegate = nil
+            completionHandler(urls)
+        }
+        
+        let documentTypes = ["public.data"]
+        let documentPicker = UIDocumentPickerViewController(documentTypes: documentTypes, in: .import)
+        documentPicker.allowsMultipleSelection = parameters.allowsMultipleSelection
+        documentPicker.delegate = filePickerDelegate
+        
+        if let rootVC = UIApplication.shared.keyWindow?.rootViewController {
+            rootVC.present(documentPicker, animated: true)
+        } else {
+            filePickerDelegate?.documentPickerWasCancelled(documentPicker)
+        }
+    }
+    
+    final class FilePickerDelegate: NSObject, UIDocumentPickerDelegate {
+        let completionHandler: ([URL]?) -> Void
+
+        init(completionHandler: @escaping ([URL]?) -> Void) {
+            self.completionHandler = completionHandler
+        }
+        
+        public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+            completionHandler(urls)
+        }
+        
+        public func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+            completionHandler([])
+        }
+    }
     
     // https://stackoverflow.com/a/42840541/4637638
     public func isVideoPlayerWindow(_ notificationObject: AnyObject?) -> Bool {

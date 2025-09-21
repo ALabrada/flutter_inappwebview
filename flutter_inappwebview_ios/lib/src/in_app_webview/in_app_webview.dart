@@ -124,6 +124,7 @@ class IOSInAppWebViewWidgetCreationParams
       super.onCameraCaptureStateChanged,
       super.onMicrophoneCaptureStateChanged,
       super.onContentSizeChanged,
+      super.onShowFileChooser,
       super.initialUrlRequest,
       super.initialFile,
       super.initialData,
@@ -242,6 +243,7 @@ class IOSInAppWebViewWidgetCreationParams
             onMicrophoneCaptureStateChanged:
                 params.onMicrophoneCaptureStateChanged,
             onContentSizeChanged: params.onContentSizeChanged,
+            onShowFileChooser: params.onShowFileChooser,
             initialUrlRequest: params.initialUrlRequest,
             initialFile: params.initialFile,
             initialData: params.initialData,
@@ -399,6 +401,10 @@ class IOSInAppWebViewWidget extends PlatformInAppWebViewWidget {
     if (params.onNavigationResponse != null &&
         settings.useOnNavigationResponse == null) {
       settings.useOnNavigationResponse = true;
+    }
+    if (params.onShowFileChooser != null &&
+        settings.useOnShowFileChooser == null) {
+      settings.useOnShowFileChooser = true;
     }
   }
 

@@ -1388,6 +1388,24 @@ class IOSInAppWebViewController extends PlatformInAppWebViewController
                 .onContentSizeChanged(oldContentSize, newContentSize);
         }
         break;
+      case "onShowFileChooser":
+        if ((webviewParams != null &&
+                webviewParams!.onShowFileChooser != null) ||
+            _inAppBrowserEventHandler != null) {
+          Map<String, dynamic> arguments =
+              call.arguments.cast<String, dynamic>();
+          ShowFileChooserRequest request =
+              ShowFileChooserRequest.fromMap(arguments)!;
+
+          if (webviewParams != null && webviewParams!.onShowFileChooser != null)
+            return (await webviewParams!.onShowFileChooser!(
+                    _controllerFromPlatform, request))
+                ?.toMap();
+          else
+            return (await _inAppBrowserEventHandler!.onShowFileChooser(request))
+                ?.toMap();
+        }
+        break;
       case "onCallJsHandler":
         String handlerName = call.arguments["handlerName"];
         Map<String, dynamic> handlerDataMap =

@@ -1140,6 +1140,7 @@ class PlatformWebViewCreationParams<T> {
   ///
   ///**Officially Supported Platforms/Implementations**:
   ///- Android native WebView ([Official API - WebChromeClient.onShowFileChooser](https://developer.android.com/reference/android/webkit/WebChromeClient#onShowFileChooser(android.webkit.WebView,%20android.webkit.ValueCallback%3Candroid.net.Uri[]%3E,%20android.webkit.WebChromeClient.FileChooserParams)))
+  ///- iOS native WebView ([Oficial API - WKUIDelegate.webview(_:runopenpanelwith:initiatedbyframe:completionhandler:)](https://developer.apple.com/documentation/webkit/wkuidelegate/webview(_:runopenpanelwith:initiatedbyframe:completionhandler:)))
   ///{@endtemplate}
   final FutureOr<ShowFileChooserResponse?> Function(T controller, ShowFileChooserRequest request)? onShowFileChooser;
 

@@ -20,9 +20,12 @@ class ShowFileChooserRequestMode {
   ///
   ///**Officially Supported Platforms/Implementations**:
   ///- Android native WebView
+  ///- iOS
   static final OPEN = ShowFileChooserRequestMode._internalMultiPlatform(0, () {
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
+        return 0;
+      case TargetPlatform.iOS:
         return 0;
       default:
         break;
@@ -36,10 +39,13 @@ class ShowFileChooserRequestMode {
   ///
   ///**Officially Supported Platforms/Implementations**:
   ///- Android native WebView
+  ///- iOS
   static final OPEN_FOLDER =
       ShowFileChooserRequestMode._internalMultiPlatform(2, () {
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
+        return 2;
+      case TargetPlatform.iOS:
         return 2;
       default:
         break;
@@ -51,10 +57,13 @@ class ShowFileChooserRequestMode {
   ///
   ///**Officially Supported Platforms/Implementations**:
   ///- Android native WebView
+  ///- iOS
   static final OPEN_MULTIPLE =
       ShowFileChooserRequestMode._internalMultiPlatform(1, () {
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
+        return 1;
+      case TargetPlatform.iOS:
         return 1;
       default:
         break;

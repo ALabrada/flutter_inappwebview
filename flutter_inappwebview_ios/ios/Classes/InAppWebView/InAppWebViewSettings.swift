@@ -92,6 +92,7 @@ public class InAppWebViewSettings: ISettings<InAppWebView> {
     var pluginScriptsForMainFrameOnly = false
     var isUserInteractionEnabled = true
     var alpha: Double? = nil
+    var useOnShowFileChooser = false
     
     override init(){
         super.init()

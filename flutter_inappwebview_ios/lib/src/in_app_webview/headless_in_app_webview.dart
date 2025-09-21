@@ -396,6 +396,10 @@ class IOSHeadlessInAppWebView extends PlatformHeadlessInAppWebView
         settings.useOnNavigationResponse == null) {
       settings.useOnNavigationResponse = true;
     }
+    if (params.onShowFileChooser != null &&
+        settings.useOnShowFileChooser == null) {
+      settings.useOnShowFileChooser = true;
+    }
   }
 
   @override
