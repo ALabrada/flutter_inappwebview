@@ -37,8 +37,6 @@ class ShowFileChooserRequestMode_ {
   static const OPEN_FOLDER = const ShowFileChooserRequestMode_._internal(2);
 
   ///Allows picking a nonexistent file and saving it.
-  @EnumSupportedPlatforms(platforms: [
-    EnumAndroidPlatform(value: 3)
-  ])
+  @EnumSupportedPlatforms(platforms: [EnumAndroidPlatform(value: 3)])
   static const SAVE = const ShowFileChooserRequestMode_._internal(3);
 }
